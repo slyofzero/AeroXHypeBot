@@ -64,6 +64,7 @@ export async function sendAlert(token: string) {
     const hypeScore = getRandomInteger();
     const snipers = firstPair.txns.m5.buys + 1;
     const liquidity = firstPair.liquidity.quote;
+    const liquidityUsd = firstPair.liquidity.usd;
     const { buys } = transactions[token];
 
     if (!(liquidityUsd >= 3000 && liquidityUsd <= 12000 && fdv <= 500000)) {
