@@ -10,6 +10,7 @@ import { errorHandler, log } from "@/utils/handlers";
 import { teleBot } from "..";
 import { getRandomInteger } from "@/utils/general";
 import { hypeNewPairs } from "@/vars/pairs";
+import { transactions } from "@/vars/transactions";
 
 export async function sendAlert(token: string) {
   let message = "";
@@ -30,7 +31,7 @@ export async function sendAlert(token: string) {
     const firstPair = tokenData.data.pairs.at(0);
     if (!firstPair) return false;
 
-    const { baseToken, pairCreatedAt } = firstPair;
+    const { baseToken, pairCreatedAt, fdv } = firstPair;
     const { name, symbol } = baseToken;
     const age = cleanUpBotMessage(moment(pairCreatedAt).fromNow());
     const totalSupply = cleanUpBotMessage(parseFloat(Number(tokenAudit.total_supply).toFixed(2)).toLocaleString("en")) // prettier-ignore
@@ -63,8 +64,16 @@ export async function sendAlert(token: string) {
     const hypeScore = getRandomInteger();
     const snipers = firstPair.txns.m5.buys + 1;
     const liquidity = firstPair.liquidity.quote;
+    const { buys } = transactions[token];
 
-    if (!(liquidity >= 3000 && liquidity <= 12000)) {
+    if (
+      !(
+        liquidity >= 3000 &&
+        liquidity <= 12000 &&
+        fdv >= 15000 &&
+        fdv <= 500000
+      )
+    ) {
       log(`Liquidity not in range ${liquidity}`);
       return false;
     }
@@ -91,6 +100,7 @@ ${isBuyTaxSafe} Buy Tax: ${cleanUpBotMessage(buyTax)}%
 ${isSellTaxSafe} Sell Tax: ${cleanUpBotMessage(sellTax)}%
 ${isLpLocked}
 🎯 Snipers: ${snipers}
+Buys for: $${cleanUpBotMessage(buys)}
 
 Token Contract:
 \`${token}\`
@@ -100,7 +110,7 @@ Security: [OttoSimBot](${`https://t.me/OttoSimBot?start=${token}`}) \\| [TokenSn
 Social Links: ${socialLinks}
 
 [📊 DexTools](${`https://www.dextools.io/app/en/ether/pair-explorer/${token}`}) [📊 DexSpy](${`https://dexspy.io/eth/token/${token}`})
-[📊 DexTools](${`https://dexscreener.com/ethereum/${token}`}) [⚪ Etherscan](${`https://etherscan.io//token/${token}`})
+[📊 DexScreener](${`https://dexscreener.com/ethereum/${token}`}) [⚪ Etherscan](${`https://etherscan.io//token/${token}`})
   `;
 
     const testChannelMsg = teleBot.api.sendMessage(-1002084945881, message, {
