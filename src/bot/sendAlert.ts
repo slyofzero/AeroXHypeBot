@@ -69,7 +69,7 @@ export async function sendAlert(token: string) {
       return false;
     }
 
-    message = `*Volume Alert*
+    message = `*AEROX Hype Alert*
 
 ${hardCleanUpBotMessage(name)} \\| ${hardCleanUpBotMessage(symbol)}
 
