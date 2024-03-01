@@ -67,7 +67,7 @@ export async function sendAlert(token: string) {
     const liquidityUsd = firstPair.liquidity.usd;
     const { buys } = transactions[token];
 
-    if (!(liquidityUsd >= 3000 && liquidityUsd <= 12000 && fdv <= 500000)) {
+    if (!(liquidityUsd >= 1000 && fdv >= 5000)) {
       log(`Liquidity not in range ${liquidity}`);
       return false;
     }
